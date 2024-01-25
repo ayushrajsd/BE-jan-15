@@ -1,24 +1,9 @@
 const express = require("express");
-const fs = require("fs");
-const short = require("short-uuid");
 const mongoose = require("mongoose");
-const User = require("./models/userModel");
-const {
-  getUserHandler,
-  createUserhandler,
-  getuserById,
-  updateUserById,
-  deleteUserById,
-  checkInput,
-} = require("./controllers/userController");
 
-const {
-  getProductHandler,
-  createProducthandler,
-  getproductById,
-  updateProductById,
-  deleteProductById,
-} = require("./controllers/productController");
+/**routers */
+const userRouter = require("./routes/userRouter");
+const productRouter = require("./routes/productRouter");
 
 require("dotenv").config(); // to read .env file and make them available in process.env
 console.log(process.env.PORT);
@@ -45,33 +30,35 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use(function(req, res, next) {
-//    if(isEmpty){
-//     // return error
-//    } else{
-//     next()
-//    }
+app.use("/search", async function (req, res) {
+  const sortQuery = req.query.sort;
+  const selectQuery = req.query.select;
+  /** sorting logic */
+  let queryResPromise = Product.find();
+  if (sortQuery) {
+    const [sortParam, order] = sortQuery.split(" ");
+    console.log("sortParam", sortParam);
+    console.log("order", order);
+    if (order === "asc") {
+      queryResPromise = queryResPromise.sort(sortParam);
+    } else {
+      queryResPromise = queryResPromise.sort(`-${sortParam}`);
+    }
+  }
+  const result = await queryResPromise;
 
-// })
+  console.log("sort ", sortParams);
+  console.log("select ", selectParams);
+  res.status(200).json({
+    message: "search successfull",
+    data: req.query,
+  });
+});
 
-// app.use(function (req, res) {
-//     res.status(200).send("Hello World");
-//   });
-
-// app.use(checkInput)
-
-app.get("/api/user", getUserHandler);
-app.post("/api/user", checkInput, createUserhandler);
-app.get("/api/user/:id", getuserById);
-app.patch("/api/user/:id", updateUserById);
-app.delete("/api/user/:id", deleteUserById);
-
-/** priduct routes */
-app.get("/api/product", getProductHandler);
-app.post("/api/product", createProducthandler);
-app.get("/api/product/:id", getproductById);
-app.delete("/api/product/:id", deleteProductById);
-app.patch("/api/product/:id", updateProductById);
+/** lets say the requested path is /api/user/123 */
+app.use("/api/user", userRouter);
+/** lets say the requested url is to delete a product with id abc ; url -> /api/product/abc*/
+app.use("/api/product", productRouter);
 
 app.use(function (req, res) {
   res.status(404).send("404 Not Found");
