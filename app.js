@@ -60,6 +60,15 @@ app.use("/api/user", userRouter);
 /** lets say the requested url is to delete a product with id abc ; url -> /api/product/abc*/
 app.use("/api/product", productRouter);
 
+app.use((err, req, res, next) => {
+  const statusCode = err.statusCode || 500;
+  const message = err.message || "Internal Server Error";
+  res.status(statusCode).json({
+    status: statusCode,
+    message: message,
+  });
+})
+
 app.use(function (req, res) {
   res.status(404).send("404 Not Found");
 });

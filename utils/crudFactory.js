@@ -36,23 +36,27 @@ const createFactory = (elementModel) => async (req, res) => {
   }
 };
 
-const getElementByIdFactory = (elementModel) => async (req, res) => {
+const getElementByIdFactory = (elementModel) => async (req, res, next) => {
   try {
     const { id } = req.params;
     const data = await elementModel.findById(id);
+    console.log("data", data  )
     if (data == undefined) {
-      throw new Error("No data found");
+      throw {message:"no data found",statusCode:501};
     } else {
       res.status(200).json({
         message: "Data found",
         data: data,
       });
     }
-  } catch (err) {
-    res.status(500).json({
-      status: 500,
-      message: err.message,
-    });
+  } 
+  
+  catch (err) {
+    // res.status(500).json({
+    //   status: 500,
+    //   message: err.message,
+    // });
+    next(err)
   }
 };
 
