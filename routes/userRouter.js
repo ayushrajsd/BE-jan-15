@@ -7,6 +7,8 @@ const {
   updateUserById,
   deleteUserById,
   checkInput,
+  forgetPassword,
+  resetPassword
 } = require("../controllers/userController");
 
 /** original path for get users looked like /api/users/ */
@@ -15,5 +17,7 @@ userRouter.post("/",checkInput,createUserhandler)
 userRouter.get("/:id",getuserById)
 userRouter.patch("/:id",updateUserById)
 userRouter.delete("/:id",deleteUserById)
+userRouter.post("/forgetPassword",forgetPassword)
+userRouter.patch("/resetPassword/:userId",resetPassword)
 
 module.exports = userRouter;
