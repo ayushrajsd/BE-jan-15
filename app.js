@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 /**routers */
 const userRouter = require("./routes/userRouter");
 const productRouter = require("./routes/productRouter");
+const authRouter = require("./routes/authRouter");
+const cookieParser = require("cookie-parser");
 
 require("dotenv").config(); // to read .env file and make them available in process.env
 console.log(process.env.PORT);
@@ -24,6 +26,7 @@ mongoose
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.use((req, res, next) => {
   console.log(`${req.method} request to ${req.path}`);
@@ -56,9 +59,10 @@ app.use("/search", async function (req, res) {
 });
 
 /** lets say the requested path is /api/user/123 */
-app.use("/api/user", userRouter);
+app.use("/api/user", userRouter); // should be accessible only to valid user with valid token
 /** lets say the requested url is to delete a product with id abc ; url -> /api/product/abc*/
 app.use("/api/product", productRouter);
+app.use("/api/auth", authRouter);
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;

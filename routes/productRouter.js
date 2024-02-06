@@ -8,14 +8,19 @@ const {
   updateProductById,
   deleteProductById,
 } = require("../controllers/productController");
+const { checkInput } = require("../utils/crudFactory");
+const { protectRoute, isAuthorized } = require("../controllers/authController");
+
+const authorizedProductRoles = ["admin", "ceo", "sales"];
 
 /** rotutes for Products */
 productRouter.get("/", getProducts);
-productRouter.post("/", createProducthandler);
+productRouter.post("/", checkInput, protectRoute, isAuthorized(authorizedProductRoles), createProducthandler);
 productRouter.get("/bigBillionDay", getBigBillionProducts, getProducts);
 productRouter.get("/:id", getproductById);
 productRouter.patch("/:id", updateProductById);
-productRouter.delete("/:id", deleteProductById);
+productRouter.delete("/:id", protectRoute, isAuthorized(authorizedProductRoles),deleteProductById);
+
 
 async function getBigBillionProducts(req, res, next) {
   req.query.filter = JSON.stringify({ stock: { lt: 10 },averageRating: { gt: 4 }});

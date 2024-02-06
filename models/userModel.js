@@ -29,14 +29,31 @@ const userSchema = new mongoose.Schema({
     type: String,
     // required: true,
   },
-  token:String,
-  otpExpiry:Date,
+  token: String,
+  otpExpiry: Date,
+  role: {
+    type: String,
+    default: "user",
+  },
 });
 
+const validRoles = ["admin", "user", "seller"];
+
 /** pre hooks */
-userSchema.pre("save",function(){
+userSchema.pre("save", function () {
   this.confirmPassword = undefined;
-})
+  if (this.role) {
+    const isValid = validRoles.includes(this.role);
+    if (!isValid) {
+      next(new Error("user can either be admin, user or seller"));
+    } else {
+      next();
+    }
+  } else{
+    this.role = "user";
+    next();
+  }
+});
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
