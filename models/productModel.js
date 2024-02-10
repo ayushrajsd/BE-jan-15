@@ -22,7 +22,12 @@ const productSchema = new mongoose.Schema({
     type: [String],
   },
   images: [String],
-  averageRating: Number,
+  averageRating: {
+    type: Number,
+    default: 0,
+    min:0,
+    max:5
+  },
   discount: {
     type: Number,
     validate: {
@@ -51,6 +56,11 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: [true, "Product brand is required"],
   },
+  reviews:{
+    type:[mongoose.Schema.Types.ObjectId],
+    ref:"Review"
+  },
+
 });
 
 const validCategories = ["electronics", "clothes", "furniture", "stationery"];
