@@ -8,6 +8,7 @@ const authRouter = require("./routes/authRouter");
 const reviewRouter = require("./routes/reviewRouter");
 const bookingRouter = require("./routes/bookingRouter");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 require("dotenv").config(); // to read .env file and make them available in process.env
 console.log(process.env.PORT);
@@ -29,6 +30,8 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+// app.use(cors());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 app.use((req, res, next) => {
   console.log(`${req.method} request to ${req.path}`);

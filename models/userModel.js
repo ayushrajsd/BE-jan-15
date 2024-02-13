@@ -44,7 +44,7 @@ const userSchema = new mongoose.Schema({
 const validRoles = ["admin", "user", "seller"];
 
 /** pre hooks */
-userSchema.pre("save", function () {
+userSchema.pre("save", function (next) {
   this.confirmPassword = undefined;
   if (this.role) {
     const isValid = validRoles.includes(this.role);

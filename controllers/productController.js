@@ -16,6 +16,12 @@ const createProducthandler = createFactory(Product);
 const getproductById = getElementByIdFactory(Product);
 const updateProductById = updateElementByIdFactory(Product);
 const deleteProductById = deleteElementByIdFactory(Product);
+const getProductCategories = async function(req, res) {
+  res.json({
+    message: "categories",
+    data: ["electronics", "jewelery", "men's clothing", "women's clothing"]
+  });
+}
 
 module.exports = {
   getProductHandler,
@@ -23,4 +29,5 @@ module.exports = {
   getproductById,
   updateProductById,
   deleteProductById,
+  getProductCategories
 };

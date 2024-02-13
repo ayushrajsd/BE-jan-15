@@ -141,7 +141,7 @@ async function signUpHandler(req, res) {
   }
 }
 
-async function loginHandler(req, res) {
+async function loginHandler(req, res, next) {
   // validate credentials
   // send token
   try {
@@ -162,6 +162,11 @@ async function loginHandler(req, res) {
         res.json({
           message: "login successfull",
           data: user,
+          user:{
+            name:user.name,
+            email:user.email,
+            role:user.role
+          }
         });
       } else {
         res.status(400).json({
